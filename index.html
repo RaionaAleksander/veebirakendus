@@ -1,33 +1,36 @@
 <!DOCTYPE html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Veebirakendus Dashboard</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <header>
-        <h1>Veebilehe Analüüs</h1>
-    </header>
-    <main>
-        <!-- Form for entering URL and starting analysis -->
-        <section class="form-section">
-            <form id="crawlForm">
-                <h2>URL-i vorm</h2>
-                <label for="urlInput">Sisestage e-poe URL:</label>
-                <input type="text" id="urlInput" placeholder="Näiteks: https://www.example.com" required>
-                <button type="submit">Alusta Analüüsi</button>
-            </form>
-        </section>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Veebirakendus Dashboard</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <header>
+            <h1>Veebilehe Analüüs</h1>
+        </header>
+        <main>
+            <!-- Form for entering URL and starting analysis -->
+            <section class="form-section">
+                <form id="crawlForm">
+                    <h2>URL-i vorm</h2>
+                    <label for="urlInput">Sisestage e-poe URL:</label>
+                    <input type="text" id="urlInput" placeholder="Näiteks: https://www.example.com" required>
+                    <button type="submit">Alusta Analüüsi</button>
+                </form>
+            </section>
 
-        <!-- Area for displaying analysis results -->
-        <section class="results-section">
-            <div class="result-container">
-                <h2>Tulemused</h2>
-                <div id="results">
-                    <p>Tulemused kuvatakse siin pärast analüüsi!</p>
+            <!-- Area for displaying analysis results -->
+            <section class="results-section">
+                <div class="result-container">
+                    <h2>Tulemused</h2>
+                    <div id="results">
+                        <p>Tulemused kuvatakse siin pärast analüüsi!</p>
+                    </div>
                 </div>
-            </div>
-        </section>
-    </main>
-</body>
+            </section>
+        </main>
+        
+    </body>
+</html>
