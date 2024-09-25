@@ -25,12 +25,27 @@ form.addEventListener('submit', function(event) {
     })
     .then(response => response.json())
     .then(data => {
-        console.log("Siin näitame varsti midagi!")
-        console.log(data);
-        resultsContainer.innerHTML = "<p>Siin näitame varsti midagi!</p>";
+        displayResults(data);
     })
     .catch(error => {
         console.error('Tekkis viga: ', error);
         resultsContainer.innerHTML = "<p style='color: red;'>Tekkis viga. Palun proovi uuesti.</p>";
     });
 });
+
+function displayResults(data) {
+    resultsContainer.innerHTML = '';
+
+    if (data.products && data.products.length > 0) {
+        const productList = document.createElement('ul');
+        data.products.forEach(product => {
+            const listItem = document.createElement('li');
+            listItem.textContent = `${product.name} - Hind: ${product.price}`;
+            productList.appendChild(listItem);
+        })
+
+        resultsContainer.appendChild(productList);
+    } else {
+        resultsContainer.innerHTML = '<p>Tooted ei leitud.</p>'
+    }
+};
