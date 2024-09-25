@@ -1,0 +1,19 @@
+# Dependency directories
+/vendor
+/node_modules
+
+# Confidential files
+*.env
+config.php
+
+# Logs and temporary files
+*.log
+*.cache
+
+# IDE files
+.vscode/
+.idea/
+
+# System files
+.DS_Store
+Thumbs.db
