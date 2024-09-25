@@ -1,5 +1,3 @@
-const { response } = require("express");
-
 // Create constant variables by getting elements from the HTML page
 const form = document.getElementById('crawlForm');
 const urlInput = document.getElementById('urlInput');
@@ -28,6 +26,7 @@ form.addEventListener('submit', function(event) {
     .then(response => response.json())
     .then(data => {
         console.log("Siin näitame varsti midagi!")
+        console.log(data);
         resultsContainer.innerHTML = "<p>Siin näitame varsti midagi!</p>";
     })
     .catch(error => {
