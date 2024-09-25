@@ -24,3 +24,11 @@ h1 {
 }
 
 /* Main container */
+main {
+    margin-top: 30px;
+    width: 80%;
+    max-width: 900px;
+    background-color: cornflowerblue;
+    padding: 24px;
+}
+
