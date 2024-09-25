@@ -23,6 +23,10 @@ h1 {
     font-size: 2.5em;
 }
 
+h2 {
+    margin-bottom: 15px;
+}
+
 /* Main container */
 main {
     margin-top: 30px;
