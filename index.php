@@ -7,11 +7,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_SERVER['REQUEST_URI'] === '/api/c
 
         $mockData = [
             'products' => [
-                ['name' => 'Toode 1', 'price' => '11.89€'],
-                ['name' => 'Toode 2', 'price' => '29.99€'],
-                ['name' => 'Toode 3', 'price' => '35.00€'],
-                ['name' => 'Toode 4', 'price' => '8.19€'],
-            ]
+                ['name' => 'Toode 1', 'price' => '11.89€', 'category' => 'Electroonika'],
+                ['name' => 'Toode 2', 'price' => '29.99€', 'category' => 'Mööbel'],
+                ['name' => 'Toode 3', 'price' => '35.00€', 'category' => 'Rõivad'],
+                ['name' => 'Toode 4', 'price' => '8.19€', 'category' => 'Mööbel'],
+            ],
+            'categories' => ['Electroonika', 'Rõivad', 'Mööbel']
         ];
 
         header('Content-Type: application/json');

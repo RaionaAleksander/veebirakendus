@@ -37,15 +37,27 @@ function displayResults(data) {
     resultsContainer.innerHTML = '';
 
     if (data.products && data.products.length > 0) {
+        // Create a list of products, then loop through each product and add it to the list
         const productList = document.createElement('ul');
         data.products.forEach(product => {
             const listItem = document.createElement('li');
-            listItem.textContent = `${product.name} - Hind: ${product.price}`;
+            listItem.textContent = `${product.name} - Hind: ${product.price} - Kategooria: ${product.category}`;
             productList.appendChild(listItem);
-        })
+        });
 
         resultsContainer.appendChild(productList);
     } else {
         resultsContainer.innerHTML = '<p>Tooted ei leitud.</p>'
+    }
+
+    // If there are categories, they will be displayed here
+    if (data.categories && data.categories.length > 0) {
+        const categoriesList = document.createElement('ul');
+        data.categories.forEach(category => {
+            const listItem = document.createElement('li');
+            listItem.textContent = `Kategooria: ${category}`;
+            categoriesList.appendChild(listItem);
+        });
+        resultsContainer.appendChild(categoriesList);
     }
 };
