@@ -1,29 +1,92 @@
 <?php
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_SERVER['REQUEST_URI'] === '/api/crawl') {
-    $input = json_decode(file_get_contents('php://input'), true); // Here get the request body that the frontend sent
 
-    if (isset($input['url'])) {
-        $url = $input['url'];
-
-        $mockData = [
-            'products' => [
-                ['name' => 'Toode 1', 'price' => '11.89€', 'category' => 'Electroonika'],
-                ['name' => 'Toode 2', 'price' => '29.99€', 'category' => 'Mööbel'],
-                ['name' => 'Toode 3', 'price' => '35.00€', 'category' => 'Rõivad'],
-                ['name' => 'Toode 4', 'price' => '8.19€', 'category' => 'Mööbel'],
-            ],
-            'categories' => ['Electroonika', 'Rõivad', 'Mööbel']
-        ];
-
-        header('Content-Type: application/json');
-        echo json_encode($mockData);
-    } else {
-        header('Content-Type: application/json', true, 400);
-        echo json_encode(['error' => 'URL puudub']);
+function fetch_website_content($url) {
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    $response = curl_exec($ch);
+    if (curl_errno($ch)) {
+        echo json_encode(['error' => 'cURL error: ' . curl_error($ch)]);
+        return false;
     }
-
-    exit();
+    curl_close($ch);
+    return $response;
 }
+
+function parse_html($html) {
+    if (!$html) {
+        return ['error' => 'HTML source is empty'];
+    }
+    $dom = new DOMDocument();
+    @$dom->loadHTML($html);
+    $xpath = new DOMXPath($dom);
+    $result = [];
+    $category_containers = $xpath->query("//div[contains(@class, 'product-container')]");
+
+    foreach ($category_containers as $container) {
+        $category_title = $xpath->query(".//h2", $container)->item(0)->nodeValue;
+        $products = [];
+        $product_elements = $xpath->query(".//li[contains(@class, 'glide__slide')]", $container);
+
+        foreach ($product_elements as $product) {
+            $name = $xpath->query(".//div[@class='name']", $product)->item(0)->nodeValue;
+
+            $price_new = $xpath->query(".//span[@class='price-new']", $product);
+            $price_old = $xpath->query(".//span[@class='price-old']", $product);
+            $price_single = $xpath->query(".//div[@class='price']", $product);
+
+            if ($price_new->length > 0 && $price_old->length > 0) {
+                $new_price = floatval(str_replace(['€', ','], ['', '.'], $price_new->item(0)->nodeValue));
+                $old_price = floatval(str_replace(['€', ','], ['', '.'], $price_old->item(0)->nodeValue));
+                $discount_percentage = round((($old_price - $new_price) / $old_price) * 100);
+                $products[] = [
+                    'name' => trim($name),
+                    'price' => number_format($new_price, 2) . ' €',
+                    'old_price' => number_format($old_price, 2) . ' €',
+                    'discount' => $discount_percentage . '%'
+                ];
+            } elseif ($price_single->length > 0) {
+                $single_price = trim($price_single->item(0)->nodeValue);
+
+                $single_price = str_replace(['â', '¬'], '', $single_price);
+
+                $products[] = [
+                    'name' => trim($name),
+                    'price' => $single_price . '€',
+                    'old_price' => '',
+                    'discount' => 'Ei ole allahindlust'
+                ];
+            }
+        }
+        $result[] = [
+            'category' => trim($category_title),
+            'products' => $products
+        ];
+    }
+    return $result;
+}
+
+$data = json_decode(file_get_contents('php://input'), true);
+$url = $data['url'] ?? null;
+
+if ($url) {
+    $html_content = fetch_website_content($url);
+    if ($html_content) {
+        $parsed_data = parse_html($html_content);
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode($parsed_data);
+    } else {
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode(['error' => 'Andmete toomine saidilt nurjus']);
+    }
+} else {
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode(['error' => 'URL-i ei saadetud']);
+}
+exit();
+
 ?>
 
 <!DOCTYPE html>

@@ -16,7 +16,7 @@ form.addEventListener('submit', function(event) {
 
     resultsContainer.innerHTML = "<p>Analüüs toimub... Palun oodake.</p>";
 
-    fetch('/api/crawl', {
+    fetch('http://localhost:8000/api/crawl', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -36,28 +36,22 @@ form.addEventListener('submit', function(event) {
 function displayResults(data) {
     resultsContainer.innerHTML = '';
 
-    if (data.products && data.products.length > 0) {
-        // Create a list of products, then loop through each product and add it to the list
-        const productList = document.createElement('ul');
-        data.products.forEach(product => {
-            const listItem = document.createElement('li');
-            listItem.textContent = `${product.name} - Hind: ${product.price} - Kategooria: ${product.category}`;
-            productList.appendChild(listItem);
-        });
+    data.forEach(category => {
+        const categoryHeader = document.createElement('h3');
+        categoryHeader.textContent = category.category;
+        resultsContainer.appendChild(categoryHeader);
+        
+        category.products.forEach(product => {
+            const productElement = document.createElement('div');
 
-        resultsContainer.appendChild(productList);
-    } else {
-        resultsContainer.innerHTML = '<p>Tooted ei leitud.</p>'
-    }
-
-    // If there are categories, they will be displayed here
-    if (data.categories && data.categories.length > 0) {
-        const categoriesList = document.createElement('ul');
-        data.categories.forEach(category => {
-            const listItem = document.createElement('li');
-            listItem.textContent = `Kategooria: ${category}`;
-            categoriesList.appendChild(listItem);
+            productElement.innerHTML = `
+                <p><strong>Toode:</strong> ${product.name}</p>
+                <p><strong>Hind:</strong> ${product.price}</p>
+                ${product.old_price ? `<p><strong>Vana hind:</strong> ${product.old_price}</p>` : ''}
+                <p><strong>Allahindlus:</strong> ${product.discount}</p>
+                <hr/>
+            `;
+            resultsContainer.appendChild(productElement);
         });
-        resultsContainer.appendChild(categoriesList);
-    }
+    });
 };
