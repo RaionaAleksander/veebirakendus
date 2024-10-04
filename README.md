@@ -10,3 +10,5 @@ https://www.oomipood.ee
 The only change that needs to be made is possibly changing the path on line 19 of the code in the script.js file.
 
 19.  fetch('http://localhost:8000/api/crawl', {
+
+Also, for the program to work correctly, you should have the **curl** extension for the PHP server language.
